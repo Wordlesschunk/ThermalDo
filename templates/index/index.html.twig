@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello IndexController!{% endblock %}
+
+{% block body %}
+    <style>
+        body {
+            background: #666;
+            margin: 0;
+            padding: 20px;
+            font-family: monospace;
+        }
+
+        .receipt {
+            width: 300px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .divider {
+            border-top: 1px dashed #000;
+            margin: 12px 0;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        p {
+            margin: 4px 0;
+        }
+    </style>
+
+    <div class="receipt">
+        <div class="center">
+            <h1>{{ controller_name }}</h1>
+            <p>123 Example Street</p>
+            <p>Grimsby, DN31</p>
+            <p>Tel: 01472 123456</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <p>Date: 25/06/2026</p>
+        <p>Receipt #: 12345</p>
+
+        <div class="divider"></div>
+
+        <div class="row">
+            <span>Burger</span>
+            <span>£8.99</span>
+        </div>
+
+        <div class="row">
+            <span>Fries</span>
+            <span>£2.99</span>
+        </div>
+
+        <div class="row">
+            <span>Drink</span>
+            <span>£1.99</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+            <strong>Total</strong>
+            <strong>£13.97</strong>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="center">
+            <p>Thank you for your order!</p>
+            <p>Please come again</p>
+        </div>
+    </div>
+{% endblock %}

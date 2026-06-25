@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Receipt Printer Playground{% endblock %}
+
+{% block body %}
+    <style>
+        body {
+            background: #0f0f0f;
+            color: #eaeaea;
+            font-family: monospace;
+        }
+
+        .wrap {
+            max-width: 900px;
+            margin: 2em auto;
+            padding: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0ff;
+        }
+
+        h2 {
+            margin-top: 30px;
+            color: #ffcc00;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        a.btn {
+            display: block;
+            padding: 14px;
+            text-align: center;
+            background: #1b1b1b;
+            border: 1px solid #333;
+            color: #0ff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        a.btn:hover {
+            background: #0ff;
+            color: #000;
+            transform: scale(1.03);
+        }
+
+        .danger { color: #ff4d4d !important; }
+        .green { color: #4dff88 !important; }
+        .purple { color: #c77dff !important; }
+        .orange { color: #ffb84d !important; }
+
+        .ascii-box {
+            background: #111;
+            border: 1px solid #333;
+            padding: 10px;
+            margin-top: 10px;
+            white-space: pre;
+            color: #aaa;
+        }
+    </style>
+
+    <div class="wrap">
+
+        <h1>🖨️ Receipt Printer Playground</h1>
+
+        {# =========================
+       BASIC TEMPLATES
+       ========================= #}
+        <h2>🎨 Receipt Templates</h2>
+
+        <div class="grid">
+
+            <a class="btn purple" href="{{ path('print_cyberpunk') }}">
+                ⚡ Cyberpunk Receipt
+            </a>
+
+            <a class="btn orange" href="{{ path('print_fastfood') }}">
+                🍔 Fast Food POS
+            </a>
+
+            <a class="btn danger" href="{{ path('print_horror') }}">
+                💀 Horror Glitch Mode
+            </a>
+
+            <a class="btn green" href="{{ path('print_retail') }}">
+                🧾 Retail Store Receipt
+            </a>
+
+            <a class="btn" href="{{ path('print_minimal') }}">
+                📄 Minimal Clean Receipt
+            </a>
+
+        </div>
+
+        {# =========================
+       LAYOUT / DESIGN SYSTEM
+       ========================= #}
+        <h2>🧱 Layout System Demo (Conceptual)</h2>
+
+        <div class="ascii-box">
+            ┌──────────────────────────────┐
+            │          HEADER              │  ← blockHeader()
+            ├──────────────────────────────┤
+            │ ITEM NAME        PRICE       │  ← blockItem()
+            │ ITEM NAME        PRICE       │
+            ├──────────────────────────────┤
+            │            TOTAL             │  ← blockTotal()
+            ├──────────────────────────────┤
+            │      ASCII / LOGO AREA       │  ← asciiCat(), asciiRobot()
+            └──────────────────────────────┘
+        </div>
+
+        {# =========================
+       ASCII ART PREVIEW
+       ========================= #}
+        <h2>🎭 ASCII Art Examples (Printed on Receipt)</h2>
+
+        <div class="ascii-box">
+            🐱 Cat:
+            /\_/\
+            ( o.o )
+            > ^ <
+
+            🤖 Robot:
+            [=====]
+            | o o |
+            |  ^  |
+
+            ⚡ Cyber:
+            /\
+            /__\ ⚡
+            \  /
+            \/
+        </div>
+
+        {# =========================
+       ADVANCED IDEA SECTION
+       ========================= #}
+        <h2>🚀 What You Can Add Next</h2>
+
+        <div class="ascii-box">
+            ✔ Drag & drop receipt builder
+            ✔ JSON receipt templates
+            ✔ Live preview simulator
+            ✔ Print history log
+            ✔ Theme switching (casino / cafe / cyberpunk)
+            ✔ Barcode / QR printing
+        </div>
+
+    </div>
+{% endblock %}

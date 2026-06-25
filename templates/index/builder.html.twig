@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello IndexController!{% endblock %}
+
+{% block body %}
+<style>
+    body {
+        margin: 0;
+        font-family: monospace;
+        background: #666;
+    }
+
+    .builder {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    /* Toolbox */
+    .toolbox {
+        width: 180px;
+        background: #fff;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .toolbox h3 {
+        margin-top: 0;
+    }
+
+    .component {
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        cursor: grab;
+        background: #f9f9f9;
+        text-align: center;
+    }
+
+    /* Receipt canvas */
+    .receipt {
+        width: 300px;
+        min-height: 600px;
+        background: #fff;
+        padding: 12px;
+        box-sizing: border-box;
+    }
+
+    .receipt-placeholder {
+        color: #999;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    /* Receipt styling */
+    .row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .divider {
+        border-top: 1px dashed #000;
+        margin: 10px 0;
+    }
+
+    .editable {
+        cursor: pointer;
+    }
+
+    .editable:focus {
+        outline: 1px dashed #333;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="builder">
+
+    <!-- TOOLBOX -->
+    <div class="toolbox">
+        <h3>Components</h3>
+
+        <div class="component" draggable="true" data-type="text">
+            Text
+        </div>
+
+        <div class="component" draggable="true" data-type="divider">
+            Divider
+        </div>
+
+        <div class="component" draggable="true" data-type="item">
+            Item Row
+        </div>
+
+        <div class="component" draggable="true" data-type="total">
+            Total
+        </div>
+    </div>
+
+    <!-- RECEIPT -->
+    <div id="receipt" class="receipt">
+        <div class="receipt-placeholder">Drop components here</div>
+    </div>
+
+</div>
+
+<script>
+    let draggedType = null;
+
+    document.querySelectorAll('.component').forEach(el => {
+        el.addEventListener('dragstart', () => {
+            draggedType = el.dataset.type;
+        });
+    });
+
+    const receipt = document.getElementById('receipt');
+
+    receipt.addEventListener('dragover', e => {
+        e.preventDefault();
+    });
+
+    receipt.addEventListener('drop', e => {
+        e.preventDefault();
+
+        // remove placeholder
+        const placeholder = receipt.querySelector('.receipt-placeholder');
+
+        if (placeholder) {
+            placeholder.remove();
+        }
+
+        let element;
+
+        if (draggedType === 'text') {
+            element = document.createElement('div');
+            element.className = 'editable';
+            element.contentEditable = true;
+            element.textContent = 'Editable Text';
+        }
+
+        if (draggedType === 'divider') {
+            element = document.createElement('div');
+            element.className = 'divider';
+        }
+
+        if (draggedType === 'item') {
+            element = document.createElement('div');
+            element.className = 'row editable';
+            element.contentEditable = true;
+            element.innerHTML = '<span>Item</span><span>£0.00</span>';
+        }
+
+        if (draggedType === 'total') {
+            element = document.createElement('div');
+            element.className = 'row';
+            element.innerHTML = '<strong>Total</strong><strong>£0.00</strong>';
+        }
+
+        receipt.appendChild(element);
+    });
+</script>
+{% endblock %}
