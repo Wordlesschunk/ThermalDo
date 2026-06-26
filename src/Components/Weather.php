@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Components;
 
-use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Mike42\Escpos\Printer;
 use RuntimeException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final readonly class Weather
+final readonly class Weather implements ComponentInterface
 {
     private const string GEOCODING_URL =
         'https://geocoding-api.open-meteo.com/v1/search';
@@ -32,21 +31,55 @@ final readonly class Weather
 
         $icon = $this->getWeatherIcon($weatherData['icon']);
 
+        $currentRainChance = $weatherData['rain_chance']['now'];
+
         $info = [
-            sprintf("Location:    %s", $location),
-            sprintf("Condition:   %s", $weatherData['condition']),
-            sprintf("Temperature: H:%.1f°C L:%.1f°C", $weatherData['temperature']['high'], $weatherData['temperature']['low']),
-            sprintf("Feels Like:  %.1f°C", $weatherData['feels_like']['value']),
-            sprintf("Wind:        %.1f km/h", $weatherData['wind']['speed']),
-            sprintf("Humidity:    %d%%", $weatherData['humidity']['value']),
-            sprintf("Pressure:    %d hPa", $weatherData['pressure']['value']),
+            sprintf(
+                'Location:    %s',
+                $location
+            ),
+            sprintf(
+                'Condition:   %s',
+                $weatherData['condition']
+            ),
+            sprintf(
+                'Temperature: H:%.1f°C L:%.1f°C',
+                $weatherData['temperature']['high'],
+                $weatherData['temperature']['low']
+            ),
+            sprintf(
+                'Feels Like:  %.1f°C',
+                $weatherData['feels_like']['value']
+            ),
+            sprintf(
+                'Rain Chance: %s',
+                $currentRainChance === null
+                    ? 'N/A'
+                    : $currentRainChance . '%'
+            ),
+            sprintf(
+                'Max Rain:    %d%%',
+                $weatherData['rain_chance']['maximum_today']
+            ),
+            sprintf(
+                'Wind:        %.1f km/h',
+                $weatherData['wind']['speed']
+            ),
+            sprintf(
+                'Humidity:    %d%%',
+                $weatherData['humidity']['value']
+            ),
+            sprintf(
+                'Pressure:    %.0f hPa',
+                $weatherData['pressure']['value']
+            ),
         ];
 
         $height = max(count($icon), count($info));
 
         for ($i = 0; $i < $height; $i++) {
-            $left = $icon[$i] ?? "";
-            $right = $info[$i] ?? "";
+            $left = $icon[$i] ?? '';
+            $right = $info[$i] ?? '';
 
             $this->printer->text(
                 str_pad($left, 16) .

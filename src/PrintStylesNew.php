@@ -13,10 +13,11 @@ class PrintStylesNew
     /**
      * @throws \Exception
      */
-    public function __construct()
+    public function __construct(
+        Printer $printer
+    )
     {
-        $connector = new NetworkPrintConnector("192.168.1.100", 9100);
-        $this->printer = new Printer($connector);
+        $this->printer = $printer;
     }
 
     public function close(): void
@@ -43,6 +44,11 @@ class PrintStylesNew
     public function printText(string $text): void
     {
         $this->printer->text($text . "\n");
+    }
+
+    public function printTaskText(string $text): void
+    {
+        $this->printer->text(sprintf("[] %s", $text) . "\n");
     }
 
     public function printCentered(string $text): void

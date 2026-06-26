@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Components;
+
+use App\PrintStylesNew;
+use Mike42\Escpos\Printer;
+
+final readonly class TodoList
+{
+    public Printer $printer;
+
+    public function __construct(
+        Printer $printer
+    ) {
+        $this->printer = $printer;
+    }
+
+    public function print(array $todoItems): void
+    {
+        $printerComponents = new PrintStylesNew($this->printer);
+
+        $printerComponents->printBoxTitle('Todo List');
+        $printerComponents->feed();
+
+        foreach ($todoItems as $item) {
+            $printerComponents->printTaskText($item);
+        }
+
+        $this->printer->feed();
+    }
+}
