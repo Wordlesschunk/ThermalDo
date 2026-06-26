@@ -24,6 +24,12 @@ final readonly class TodoList
         $printerComponents->printBoxTitle('Todo List');
         $printerComponents->feed();
 
+        if (empty($todoItems)) {
+            $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printerComponents->printText('No todo items for today!');
+            $this->printer->setJustification();
+        }
+
         foreach ($todoItems as $item) {
             $printerComponents->printTaskText($item);
         }

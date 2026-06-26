@@ -29,7 +29,9 @@ final readonly class Weather implements ComponentInterface
     {
         $weatherData = $this->getWeather($location);
 
-        $icon = $this->getWeatherIcon($weatherData['icon']);
+        $icon = $this->getWeatherIcon(
+            $weatherData['icon']
+        );
 
         $currentRainChance = $weatherData['rain_chance']['now'];
 
@@ -75,7 +77,10 @@ final readonly class Weather implements ComponentInterface
             ),
         ];
 
-        $height = max(count($icon), count($info));
+        $height = max(
+            count($icon),
+            count($info)
+        );
 
         for ($i = 0; $i < $height; $i++) {
             $left = $icon[$i] ?? '';
@@ -104,10 +109,22 @@ final readonly class Weather implements ComponentInterface
 
         $weatherCode = (int) $current['weather_code'];
 
+        /*
+         * Open-Meteo returns:
+         *
+         * 1 = Day
+         * 0 = Night
+         */
+        $isDay = (int) ($current['is_day'] ?? 1) === 1;
+
         return [
             'location' => $this->formatLocation($location),
             'condition' => $this->getCondition($weatherCode),
-            'icon' => $this->getIconType($weatherCode),
+            'icon' => $this->getIconType(
+                $weatherCode,
+                $isDay
+            ),
+            'is_day' => $isDay,
 
             'temperature' => [
                 'now' => (float) $current['temperature_2m'],
@@ -192,6 +209,7 @@ final readonly class Weather implements ComponentInterface
                         'apparent_temperature',
                         'relative_humidity_2m',
                         'weather_code',
+                        'is_day',
                         'wind_speed_10m',
                         'wind_direction_10m',
                         'pressure_msl',
@@ -224,14 +242,18 @@ final readonly class Weather implements ComponentInterface
             $location['country'] ?? null,
         ]);
 
-        return implode(', ', array_unique($parts));
+        return implode(
+            ', ',
+            array_unique($parts)
+        );
     }
 
     private function getCurrentRainChance(array $weather): ?int
     {
         $currentTime = $weather['current']['time'] ?? null;
         $hourlyTimes = $weather['hourly']['time'] ?? [];
-        $rainChances = $weather['hourly']['precipitation_probability'] ?? [];
+        $rainChances =
+            $weather['hourly']['precipitation_probability'] ?? [];
 
         if ($currentTime === null) {
             return null;
@@ -246,7 +268,11 @@ final readonly class Weather implements ComponentInterface
          *
          * 2026-06-26T17:00
          */
-        $currentHour = substr($currentTime, 0, 13) . ':00';
+        $currentHour = substr(
+                $currentTime,
+                0,
+                13
+            ) . ':00';
 
         $index = array_search(
             $currentHour,
@@ -254,7 +280,10 @@ final readonly class Weather implements ComponentInterface
             true
         );
 
-        if ($index === false || !isset($rainChances[$index])) {
+        if (
+            $index === false
+            || !isset($rainChances[$index])
+        ) {
             return null;
         }
 
@@ -297,9 +326,11 @@ final readonly class Weather implements ComponentInterface
         };
     }
 
-    private function getIconType(int $code): string
-    {
-        return match ($code) {
+    private function getIconType(
+        int $code,
+        bool $isDay
+    ): string {
+        $type = match ($code) {
             0, 1 => 'sunny',
 
             2, 3, 45, 48 => 'cloudy',
@@ -317,11 +348,20 @@ final readonly class Weather implements ComponentInterface
 
             default => 'cloudy',
         };
+
+        if ($isDay) {
+            return $type;
+        }
+
+        return $type . '-night';
     }
 
     private function getWeatherIcon(string $type): array
     {
         $icons = [
+            /*
+             * Daytime icons
+             */
             'sunny' => [
                 '    \ | /',
                 '     .-.',
@@ -361,8 +401,52 @@ final readonly class Weather implements ComponentInterface
                 '      / /',
                 '     /_/',
             ],
+
+            /*
+             * Nighttime icons
+             */
+            'sunny-night' => [
+                '       _..._',
+                '     .::::  `.',
+                '    :::::     :',
+                "    `::::.   .'",
+                "      `-...-'",
+            ],
+
+            'cloudy-night' => [
+                '       _..._',
+                '     .::::  `.',
+                '      .--.   :',
+                "   .-(    ).'",
+                '  (___.__)__)',
+            ],
+
+            'rain-night' => [
+                '       _..._',
+                '      .--.  `.',
+                '   .-(    ).  :',
+                '  (___.__)__)',
+                "    ' ' ' '",
+            ],
+
+            'snow-night' => [
+                '       _..._',
+                '      .--.  `.',
+                '   .-(    ).  :',
+                '  (___.__)__)',
+                '    *  *  *',
+            ],
+
+            'storm-night' => [
+                '       _..._',
+                '      .--.  `.',
+                '   .-(    ).  :',
+                '  (___.__)__/)',
+                '      /_/',
+            ],
         ];
 
-        return $icons[strtolower($type)] ?? $icons['cloudy'];
+        return $icons[strtolower($type)]
+            ?? $icons['cloudy'];
     }
 }

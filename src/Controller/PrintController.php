@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Components\Quote;
 use App\Components\Schedule;
 use App\Components\TodoList;
 use App\PrintStylesNew;
@@ -60,8 +61,15 @@ final class PrintController extends AbstractController
             '4:00 PM - Wrap Up and Plan for Tomorrow',
         ]);
 
-//        new Schedule($printer)->print([]);
+        $printer->feed();
 
+        new Quote($printer)->print();
+
+        $printer->feed();
+
+        $printerStyles->hr();
+
+        $printerStyles->printCentered('Bye!');
 
         $printer->feed(2);
 
