@@ -162,8 +162,6 @@ final class DebugController extends AbstractController
 
     private function templateCyberpunk(Printer $printer): void
     {
-        $this->printLogo($printer);
-
         $this->blockHeader($printer, "NEON POS SYSTEM");
 
         $printer->setJustification(Printer::JUSTIFY_LEFT);
@@ -203,16 +201,6 @@ final class DebugController extends AbstractController
         $this->asciiCat($printer);
     }
 
-    private function printLogo(Printer $printer): void
-    {
-        $imgPath = __DIR__ . '/../../public/logo.png';
-
-        $logo = EscposImage::load($imgPath, false);
-
-        $printer->setJustification(Printer::JUSTIFY_CENTER);
-        $printer->graphics($logo);
-        $printer->feed();
-    }
 
     private function templateHorror(Printer $printer): void
     {
