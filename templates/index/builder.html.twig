@@ -103,6 +103,13 @@
         <div class="receipt-placeholder">Drop components here</div>
     </div>
 
+    <!-- EXPORT BUTTON -->
+    <div style="margin-left: 20px; display: flex; flex-direction: column; gap: 10px;">
+        <button id="exportBtn" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 4px;">
+            Export Template (JSON)
+        </button>
+    </div>
+
 </div>
 
 <script>
@@ -158,6 +165,52 @@
         }
 
         receipt.appendChild(element);
+    });
+
+    // Export functionality
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        const components = [];
+        const receiptElements = receipt.querySelectorAll(':scope > *:not(.receipt-placeholder)');
+
+        receiptElements.forEach((el, index) => {
+            let component = {
+                order: index + 1,
+                type: null,
+                content: null
+            };
+
+            if (el.classList.contains('editable') && !el.classList.contains('row')) {
+                component.type = 'text';
+                component.content = el.textContent;
+            } else if (el.classList.contains('divider')) {
+                component.type = 'divider';
+            } else if (el.classList.contains('row') && el.textContent.includes('Total')) {
+                component.type = 'total';
+            } else if (el.classList.contains('row')) {
+                component.type = 'item';
+                component.content = el.textContent;
+            }
+
+            components.push(component);
+        });
+
+        const template = {
+            name: 'Receipt Template',
+            created: new Date().toISOString(),
+            components: components
+        };
+
+        const dataStr = JSON.stringify(template, null, 2);
+
+        // Display JSON on page
+        let outputDiv = document.getElementById('jsonOutput');
+        if (!outputDiv) {
+            outputDiv = document.createElement('div');
+            outputDiv.id = 'jsonOutput';
+            outputDiv.style.cssText = 'margin-left: 20px; background: #f5f5f5; padding: 15px; border-radius: 4px; max-width: 400px; max-height: 600px; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all;';
+            document.querySelector('.builder').appendChild(outputDiv);
+        }
+        outputDiv.textContent = dataStr;
     });
 </script>
 {% endblock %}
