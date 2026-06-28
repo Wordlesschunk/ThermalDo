@@ -9,6 +9,7 @@ use App\Components\Schedule;
 use App\Components\TodoList;
 use App\PrintStylesNew;
 use App\Components\Weather;
+use App\Service\TodoistConnector;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Mike42\Escpos\Printer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +20,10 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 final class PrintController extends AbstractController
 {
     #[Route('/print', name: 'app_print')]
-    public function index(HttpClientInterface $httpClient): Response
+    public function index(
+        HttpClientInterface $httpClient,
+        TodoistConnector $todoistConnector
+    ): Response
     {
         $now = new \DateTimeImmutable();
 
@@ -43,13 +47,7 @@ final class PrintController extends AbstractController
 
         $printer->feed(1);
 
-        new TodoList($printer)->print([
-            'Finish the report',
-            'Call the client',
-            'Prepare presentation slides',
-            'Schedule team meeting',
-            'Review project plan',
-        ]);
+        new TodoList($printer)->print($todoistConnector->getTodaysTasksAsTitles());
 
         $printer->feed(1);
 

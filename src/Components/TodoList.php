@@ -21,7 +21,7 @@ final readonly class TodoList
     {
         $printerComponents = new PrintStylesNew($this->printer);
 
-        $printerComponents->printBoxTitle('Todo List');
+        $printerComponents->printBoxTitle('Todo List Items For Today');
         $printerComponents->feed();
 
         if (empty($todoItems)) {

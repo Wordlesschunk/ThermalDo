@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\TodoistConnector;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Mike42\Escpos\Printer;
@@ -19,8 +20,12 @@ final class DebugController extends AbstractController
        ========================= */
 
     #[Route('/debug', name: 'app_debug_home')]
-    public function index(): Response
+    public function index(TodoistConnector $connector): Response
     {
+
+        dd($connector->getTodaysTasksAsTitles());
+
+
         return $this->render('debug/index.html.twig');
     }
 
